@@ -33,25 +33,22 @@ const classToColorMap = {
 	'color-traveling-full': '#1e59f2'
 };
 
-const getMarkerSize = (distance) => {
-	if (distance > 700) {
-		return 20;
-	} else if (distance <= 700 && distance > 400) {
-		return 40;
-	} else {
-		return 60;
-	}
+const sizes = {
+	'big': 60,
+	'medium': 40,
+	'small': 20
 };
 
 const getMarkerStyles = (offset, markerSize, markerColor) => {
+
 	return {
 		marginLeft: offset + '%',
 		backgroundColor: markerColor,
-		height: markerSize,
-		width: markerSize,
+		height: sizes[markerSize],
+		width: sizes[markerSize],
 		borderRadius: 50,
 		position: 'absolute',
-		top: -1 * markerSize
+		top: -1 * sizes[markerSize]
 	}
 };
 
@@ -95,14 +92,12 @@ export class Marker extends Component {
 	}
 
 	render() {
-		const markerSize = getMarkerSize(this.props.distance);
 		return (
 			<View>
-				<View style={getMarkerStyles(this.props.offset, markerSize, this.state.markerColor)}>
+				<View style={getMarkerStyles(this.props.offset, this.props.markerSize, this.state.markerColor)}>
 					<Image source={{
-						uri:`https://cdn.travel.sygic.com/web/markers/${this.state.markerUrl}.png`,
-						cache: 'only-if-cached'}}
-					       style={{width: markerSize, height: markerSize, zIndex: 10}}>
+						uri:`https://cdn.travel.sygic.com/web/markers/${this.state.markerUrl}.png`}}
+					       style={{width: sizes[this.props.markerSize], height: sizes[this.props.markerSize], zIndex: 10}}>
 					</Image>
 				</View>
 			</View>
