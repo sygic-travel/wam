@@ -22,38 +22,36 @@ export default class PlaceDetailedModal extends Component {
 					<View style={{marginTop: 22}}>
 						<View>
 							{ !this.props.placeDetailed &&
-							<ActivityIndicator
-								animating={true}
-								style={{height: 80}}
-								size="large"
-							/>
+								<ActivityIndicator
+									animating={true}
+									style={{height: 80}}
+									size="large"
+								/>
 							}
 
 							{ this.props.placeDetailed &&
-							<View>
-								{ this.props.placeDetailed.detail.media.landscape &&
-								<Image source={{ uri: this.props.placeDetailed.detail.media.landscape.urlTemplate}}
-								       style={{width: '100%', height: 200}}>
-								</Image>
-								}
-								<View style={{ padding: 10 }}>
-									<Text style={{
-										fontSize: 20,
-										fontWeight: 'bold'
-									}}>{this.props.placeDetailed.name}</Text>
-									<Text>
-										{this.props.placeDetailed.perex}
-									</Text>
+								<View>
+									{ this.props.placeDetailed.detail.media.landscape &&
+									<Image source={{ uri: this.props.placeDetailed.detail.media.landscape.urlTemplate}}
+									       style={{width: '100%', height: 200}}>
+									</Image>
+									}
+									<View style={{ padding: 10 }}>
+										<Text style={{
+											fontSize: 20,
+											fontWeight: 'bold'
+										}}>{this.props.placeDetailed.name}</Text>
+										<Text>
+											{this.props.placeDetailed.perex}
+										</Text>
+									</View>
 								</View>
-							</View>
 							}
-
 							<Button
 								onPress={() => this.props.onClosePress()}
 								title="Close"
 								color="#841584"
 							/>
-
 						</View>
 					</View>
 				</Modal>
