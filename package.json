@@ -10,7 +10,8 @@
 		"react": "16.0.0-alpha.6",
 		"react-native": "0.44.2",
 		"react-native-camera": "0.6",
-		"react-native-heading": "^1.1.1"
+		"react-native-heading": "^1.1.1",
+		"sygic-travel-js-sdk": "sygic-travel/js-sdk.git#v0.2.0-beta"
 	},
 	"devDependencies": {
 		"babel-jest": "20.0.3",
