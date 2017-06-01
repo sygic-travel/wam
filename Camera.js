@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default class BadInstagramCloneApp extends Component {
+export default class FullScreenCamera extends Component {
   render() {
     return (
       <View style={styles.container}>
@@ -34,4 +34,4 @@ export default class BadInstagramCloneApp extends Component {
   }
 }
 
-AppRegistry.registerComponent('BadInstagramCloneApp', () => BadInstagramCloneApp);
+AppRegistry.registerComponent('FullScreenCamera', () => FullScreenCamera);

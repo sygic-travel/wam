@@ -4,16 +4,18 @@ import {
 	StyleSheet,
 	View
 } from 'react-native';
+const { DeviceEventEmitter } = require('react-native');
+const ReactNativeHeading = require('react-native-heading');
 
+import FullScreenCamera from './Camera';
+import { Marker } from './Marker';
 import * as SygicTravelSDK from 'sygic-travel-js-sdk';
+
 const apiUrl: string = 'https://api.sygictraveldata.com/0.2/en/';
 const apiKey = 'n25naja6njhph9zb1jzpnt34yab0k383';
 const stSDK = SygicTravelSDK.create(apiUrl);
 stSDK.setUserSession(apiKey);
 
-import BadInstagramCloneApp from './Camera';
-const { DeviceEventEmitter } = require('react-native');
-const ReactNativeHeading = require('react-native-heading');
 
 const styles = StyleSheet.create({
 	container: {
@@ -24,11 +26,18 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		height: '100%',
 		width: '100%'
+	},
+	markerStrip: {
+		position: 'absolute',
+		zIndex: 10,
+		top: '50%',
+		width: '100%',
+		height: 0,
+		backgroundColor: 'green'
 	}
 });
 
 export default class wam extends Component {
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -37,7 +46,6 @@ export default class wam extends Component {
 			heading: null,
 		};
 	}
-
 
 	componentDidMount() {
 		navigator.geolocation.getCurrentPosition( (position) => {
@@ -48,7 +56,7 @@ export default class wam extends Component {
 			};
 			const bounds = createBoundsFromSizeAndPoint(1000, 1000, location);
 			//console.log('BOUNDS:', bounds);
-			stSDK.getPlaces({bounds: bounds, level: 'poi', limit: 256}).then((places) => {
+			stSDK.getPlaces({bounds: bounds, level: 'poi', limit: 10}).then((places) => {
 				console.log(places);
 				let processedPlaces = places.map((place) => ({
 					angle: angle360(location.lng, location.lat, place.location.lng, place.location.lat),
@@ -67,7 +75,7 @@ export default class wam extends Component {
 			});
 
 		DeviceEventEmitter.addListener('headingUpdated', data => {
-			if (this.state.heading !== null && Math.abs(this.state.heading - data.heading) < 10) {
+			if (this.state.heading !== null && Math.abs(this.state.heading - data.heading) < 1) {
 				return;
 			}
 			this.setState({heading: data.heading});
@@ -93,15 +101,27 @@ export default class wam extends Component {
 		});
 
 	}
+
 	componentWillUnmount() {
 		ReactNativeHeading.stop();
 		DeviceEventEmitter.removeAllListeners('headingUpdated');
-		//<BadInstagramCloneApp />
 	}
+
 	render() {
 		return (
 			<View style={styles.container}>
+				<FullScreenCamera />
+				<View style={styles.markerStrip}>
+					{ this.state.places.map((place) => {
+						if (place.displayMargin !== null) {
+							return (
+								<Marker key={place.place.id} offset={place.displayMargin} distance={place.distance} place={place.place} />
+							)
+						}
+					})
+					}
 
+				</View>
 			</View>
 		);
 	}
