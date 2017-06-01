@@ -45,7 +45,7 @@ const getMarkerSize = (distance) => {
 
 const getMarkerStyles = (offset, markerSize, markerColor) => {
 	return {
-		marginLeft: offset,
+		marginLeft: offset + '%',
 		backgroundColor: markerColor,
 		height: markerSize,
 		width: markerSize,

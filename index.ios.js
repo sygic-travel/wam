@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
 });
 
 export default class wam extends Component {
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -47,7 +46,6 @@ export default class wam extends Component {
 			heading: null,
 		};
 	}
-
 
 	componentDidMount() {
 		navigator.geolocation.getCurrentPosition( (position) => {
@@ -58,7 +56,7 @@ export default class wam extends Component {
 			};
 			const bounds = createBoundsFromSizeAndPoint(1000, 1000, location);
 			//console.log('BOUNDS:', bounds);
-			stSDK.getPlaces({bounds: bounds, level: 'poi', limit: 256}).then((places) => {
+			stSDK.getPlaces({bounds: bounds, level: 'poi', limit: 10}).then((places) => {
 				console.log(places);
 				let processedPlaces = places.map((place) => ({
 					angle: angle360(location.lng, location.lat, place.location.lng, place.location.lat),
@@ -77,7 +75,7 @@ export default class wam extends Component {
 			});
 
 		DeviceEventEmitter.addListener('headingUpdated', data => {
-			if (this.state.heading !== null && Math.abs(this.state.heading - data.heading) < 10) {
+			if (this.state.heading !== null && Math.abs(this.state.heading - data.heading) < 1) {
 				return;
 			}
 			this.setState({heading: data.heading});
@@ -114,9 +112,13 @@ export default class wam extends Component {
 			<View style={styles.container}>
 				<FullScreenCamera />
 				<View style={styles.markerStrip}>
-					{ this.state.places.map((place) => (
-						<Marker key={place.place.id} offset={place.offset} distance={place.distance} place={place.place} />
-					))
+					{ this.state.places.map((place) => {
+						if (place.displayMargin !== null) {
+							return (
+								<Marker key={place.place.id} offset={place.displayMargin} distance={place.distance} place={place.place} />
+							)
+						}
+					})
 					}
 
 				</View>
