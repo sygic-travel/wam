@@ -59,7 +59,7 @@ export default class wam extends Component {
 			};
 			const bounds = createBoundsFromSizeAndPoint(1000, 1000, location);
 			//console.log('BOUNDS:', bounds);
-			stSDK.getPlaces({bounds: bounds, level: 'poi', limit: 100}).then((places) => {
+			stSDK.getPlaces({bounds: bounds, level: 'poi', limit: 50}).then((places) => {
 				let processedPlaces = places.map((place) => ({
 					angle: angle360(location.lng, location.lat, place.location.lng, place.location.lat),
 					place: place,

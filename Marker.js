@@ -40,9 +40,8 @@ const sizes = {
 };
 
 const getMarkerStyles = (offset, markerSize, markerColor) => {
-
 	return {
-		marginLeft: offset + '%',
+		//marginLeft: offset + '%',
 		backgroundColor: markerColor,
 		height: sizes[markerSize],
 		width: sizes[markerSize],
@@ -93,7 +92,10 @@ export class Marker extends Component {
 
 	render() {
 		return (
-			<View>
+			<View style={{
+				left: this.props.offset + '%',
+				position: 'absolute'
+			}}>
 				<View style={getMarkerStyles(this.props.offset, this.props.markerSize, this.state.markerColor)}>
 					<Image source={{
 						uri:`https://cdn.travel.sygic.com/web/markers/${this.state.markerUrl}.png`}}
