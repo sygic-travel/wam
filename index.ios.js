@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import {
 	AppRegistry,
 	StyleSheet,
-	View
+	View,
+	Modal,
+	Text,
+	Button,
+	ActivityIndicator,
+	Image
 } from 'react-native';
 
 import { createBoundsFromSizeAndPoint, angle360, getDistance } from './src/geo';
@@ -10,6 +15,7 @@ import { createBoundsFromSizeAndPoint, angle360, getDistance } from './src/geo';
 const { DeviceEventEmitter } = require('react-native');
 const ReactNativeHeading = require('react-native-heading');
 
+import PlaceDetailedModal from './Modal';
 import FullScreenCamera from './Camera';
 import { Marker } from './Marker';
 import * as SygicTravelSDK from 'sygic-travel-js-sdk';
@@ -47,6 +53,8 @@ export default class wam extends Component {
 			placesData: [],
 			places: [],
 			heading: null,
+			modalOpened: false,
+			placeDetailed: null
 		};
 	}
 
@@ -120,21 +128,43 @@ export default class wam extends Component {
 		DeviceEventEmitter.removeAllListeners('headingUpdated');
 	}
 
+	async getPlaceDetailedForModal(id) {
+		this.setState({
+			modalOpened: true
+		});
+
+		const placeDetailed = await stSDK.getPlaceDetailed(id, '500x300');
+		this.setState({
+			placeDetailed: placeDetailed
+		});
+	}
+
 	render() {
 		return (
 			<View style={styles.container}>
 				<FullScreenCamera />
-				<View style={styles.markerStrip}>
+				<View style={styles.markerStrip} onPress={() => console.log(place.place.id)}>
 					{ this.state.places.map((place) => {
 						if (place.displayMargin !== null) {
 							return (
-								<Marker markerSize={place.markerSize} key={place.place.id} offset={place.displayMargin} distance={place.distance} place={place.place} />
+								<Marker
+									markerSize={place.markerSize}
+									key={place.place.id}
+									offset={place.displayMargin}
+									distance={place.distance}
+									place={place.place}
+									onMarkerPress={(id) => this.getPlaceDetailedForModal(id)}/>
 							)
 						}
 					})
 					}
-
 				</View>
+				{ this.state.modalOpened &&
+					<PlaceDetailedModal placeDetailed={this.state.placeDetailed} onClosePress={() => this.setState({
+						modalOpened: false,
+						placeDetailed: null
+					})}/>
+				}
 			</View>
 		);
 	}
