@@ -37,10 +37,13 @@ const classToColorMap = {
 const sizes = {
 	'big': 60,
 	'medium': 40,
-	'small': 20
+	'small': 10
 };
 
 const getMarkerStyles = (offset, markerSize, markerColor) => {
+	if (!markerColor) {
+		markerColor = '#999999';
+	}
 	return {
 		//marginLeft: offset + '%',
 		backgroundColor: markerColor,
@@ -48,7 +51,8 @@ const getMarkerStyles = (offset, markerSize, markerColor) => {
 		width: sizes[markerSize],
 		borderRadius: 50,
 		position: 'absolute',
-		top: -1 * sizes[markerSize]
+		top: -1 * sizes[markerSize],
+		zIndex: sizes[markerSize],
 	}
 };
 
