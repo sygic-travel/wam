@@ -4,7 +4,10 @@ import {
 	StyleSheet,
 	View
 } from 'react-native';
+
 import BadInstagramCloneApp from './Camera';
+const { DeviceEventEmitter } = require('react-native');
+const ReactNativeHeading = require('react-native-heading');
 
 const styles = StyleSheet.create({
 	container: {
@@ -19,6 +22,23 @@ const styles = StyleSheet.create({
 });
 
 export default class wam extends Component {
+	componentDidMount() {
+		ReactNativeHeading.start(1)
+			.then(didStart => {
+				this.setState({
+					headingIsSupported: didStart,
+				})
+			})
+
+		DeviceEventEmitter.addListener('headingUpdated', data => {
+			console.log('New heading is:', data.heading);
+		});
+
+	}
+	componentWillUnmount() {
+		ReactNativeHeading.stop();
+		DeviceEventEmitter.removeAllListeners('headingUpdated');
+	}
 	render() {
 		return (
 			<View style={styles.container}>
