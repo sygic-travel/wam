@@ -5,7 +5,7 @@ import {
 	View
 } from 'react-native';
 
-import { createBoundsFromSizeAndPoint, angle360 } from './src/geo';
+import { createBoundsFromSizeAndPoint, angle360, getDistance } from './src/geo';
 
 const { DeviceEventEmitter } = require('react-native');
 const ReactNativeHeading = require('react-native-heading');
@@ -63,10 +63,11 @@ export default class wam extends Component {
 				console.log(places);
 				let processedPlaces = places.map((place) => ({
 					angle: angle360(location.lng, location.lat, place.location.lng, place.location.lat),
-					place: place
+					place: place,
+					distance: getDistance(location, place.location)
 				}));
 				this.setState({placesData: processedPlaces});
-				console.log(this.state);
+				console.log('YEAH', this.state);
 			});
 		});
 

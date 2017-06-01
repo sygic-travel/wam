@@ -44,3 +44,15 @@ export function  angle360(cx, cy, ex, ey) {
 	} // range [0, 360)
 	return theta;
 }
+
+export function getDistance(point1, point2) {
+	const EARTH_RADIUS = 6378137;
+	const lat1 = point1.lat * Math.PI / 180;
+	const lng1 = point1.lng * Math.PI / 180;
+	const lat2 = point2.lat * Math.PI / 180;
+	const lng2 = point2.lng * Math.PI / 180;
+	return Math.round(
+		Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1))
+		* EARTH_RADIUS
+	);
+}
