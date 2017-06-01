@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import { createBoundsFromSizeAndPoint, angle360, getDistance } from './src/geo';
+import { processPlaces } from './src/places';
 
 const { DeviceEventEmitter } = require('react-native');
 const ReactNativeHeading = require('react-native-heading');
@@ -25,6 +26,7 @@ const apiKey = 'n25naja6njhph9zb1jzpnt34yab0k383';
 const stSDK = SygicTravelSDK.create(apiUrl);
 stSDK.setUserSession(apiKey);
 
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 const styles = StyleSheet.create({
 	container: {
@@ -54,8 +56,29 @@ export default class wam extends Component {
 			places: [],
 			heading: null,
 			modalOpened: false,
+			zoom: 0,
 			placeDetailed: null
 		};
+	}
+
+	onSwipeUp(gestureState) {
+		if (this.state.zoom > 0) {
+			this.setState({zoom: this.state.zoom - 1});
+			this.setState({
+				places: processPlaces(this.state.placesData, this.state.zoom - 1, this.state.heading),
+				zoom: this.state.zoom - 1
+			});
+		}
+	}
+
+	onSwipeDown(gestureState) {
+		if (this.state.zoom < 2) {
+			this.setState({zoom: this.state.zoom + 1});
+			this.setState({
+				places: processPlaces(this.state.placesData, this.state.zoom + 1, this.state.heading),
+				zoom: this.state.zoom + 1
+			});
+		}
 	}
 
 	componentDidMount() {
@@ -89,38 +112,12 @@ export default class wam extends Component {
 			if (this.state.heading !== null && Math.abs(this.state.heading - data.heading) < 0.5) {
 				return;
 			}
-			this.setState({heading: data.heading});
-			let bottom = data.heading - 15;
-			if (bottom < 0) {
-				bottom = 360 - bottom;
-			}
-			const top = data.heading + 15;
-			const places = this.state.placesData.map( (placeData) => {
-				if (placeData.angle >= bottom && placeData.angle <= top) {
-					let distance = placeData.angle - bottom;
-					if (distance < 0) {
-						distance = distance - 360;
-					}
-					placeData.displayMargin = Math.round((distance / 30) * 100);
-				} else {
-					placeData.displayMargin = null;
-				}
-
-				if (placeData.distance <= 200) {
-					placeData.markerSize = 'big';
-				} else if (placeData.distance <= 500) {
-					placeData.markerSize = 'medium';
-				} else {
-					placeData.markerSize = 'small';
-				}
-
-
-				return placeData;
+			this.setState({
+				places: processPlaces(this.state.placesData, this.state.zoom, data.heading),
+				heading: data.heading
 			});
-			this.setState({places: places});
 			console.log('SSSS', this.state);
 		});
-
 	}
 
 	componentWillUnmount() {
@@ -140,7 +137,21 @@ export default class wam extends Component {
 	}
 
 	render() {
+
+		const swipeConfig = {
+			velocityThreshold: 0.3,
+			directionalOffsetThreshold: 80
+		};
+
 		return (
+			<GestureRecognizer
+				config={swipeConfig}
+				onSwipeUp={(state) => this.onSwipeUp(state)}
+				onSwipeDown={(state) => this.onSwipeDown(state)}
+				style={{
+					flex: 1
+				}}
+			>
 			<View style={styles.container}>
 				<FullScreenCamera />
 				<View style={styles.markerStrip} onPress={() => console.log(place.place.id)}>
@@ -166,6 +177,7 @@ export default class wam extends Component {
 					})}/>
 				}
 			</View>
+			</GestureRecognizer>
 		);
 	}
 }

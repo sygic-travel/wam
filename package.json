@@ -11,6 +11,7 @@
 		"react-native": "0.44.2",
 		"react-native-camera": "0.6",
 		"react-native-heading": "^1.1.1",
+		"react-native-swipe-gestures": "^1.0.2",
 		"sygic-travel-js-sdk": "sygic-travel/js-sdk.git#v0.2.0-beta"
 	},
 	"devDependencies": {
