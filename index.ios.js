@@ -59,6 +59,8 @@ export default class wam extends Component {
 			zoom: 0,
 			placeDetailed: null
 		};
+
+		this.watchID = null;
 	}
 
 	onSwipeUp(gestureState) {
@@ -97,8 +99,29 @@ export default class wam extends Component {
 					distance: getDistance(location, place.location)
 				}));
 				this.setState({placesData: processedPlaces});
-				console.log('YEAH', this.state);
+				// console.log('YEAH', this.state);
 			});
+		});
+
+		this.watchID = navigator.geolocation.watchPosition((position) => {
+			//console.log('new position', position);
+			const location = {
+				lat: position.coords.latitude,
+				lng: position.coords.longitude
+			};
+			const placesData = this.state.placesData.map((pd) => ({
+				angle: angle360(location.lng, location.lat, pd.place.location.lng, pd.place.location.lat),
+				place: pd.place,
+				distance: getDistance(location, pd.place.location)
+			}));
+			this.setState({
+				placesData: placesData,
+				places: processPlaces(placesData, this.state.zoom, this.state.heading),
+				zoom: this.state.zoom
+			});
+		}, null, {
+			enableHighAccuracy: true,
+			maximumAge: 5000,
 		});
 
 		ReactNativeHeading.start(1)
