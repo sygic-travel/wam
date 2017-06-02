@@ -2994,6 +2994,10 @@ react-native-heading@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/react-native-heading/-/react-native-heading-1.1.1.tgz#a6426bb627df74b1f312f866d103defc85fda357"
 
+react-native-simple-radio-button@^2.5.0-alpha.1:
+  version "2.5.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/react-native-simple-radio-button/-/react-native-simple-radio-button-2.5.0-alpha.1.tgz#59d1d6a3b2db4eafc36ab675348f4e6bb89303de"
+
 react-native-swipe-gestures@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-native-swipe-gestures/-/react-native-swipe-gestures-1.0.2.tgz#914e1a72a94bc55b322b4622a01103ab879296dd"
