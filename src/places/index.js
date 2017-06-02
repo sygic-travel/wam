@@ -6,7 +6,7 @@ export function processPlaces(placesData, zoom, heading) {
 		bottom = 360 - bottom;
 	}
 	const BIG_LIMIT = 6;
-	const MEDIUM_LIMIT = 8;
+	const MEDIUM_LIMIT = 6;
 	const SMALL_LIMIT = 10;
 	let bigCount = 0;
 	let mediumCount = 0;
@@ -61,8 +61,8 @@ export function processPlaces(placesData, zoom, heading) {
 		}
 
 		if (placeData.markerSize === 'small' && placeData.displayMargin !== null) {
-			mediumCount++;
-			if (mediumCount > SMALL_LIMIT) {
+			smallCount++;
+			if (smallCount > SMALL_LIMIT) {
 				placeData.displayMargin = null;
 			}
 		}
