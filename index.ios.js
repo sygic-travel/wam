@@ -3,11 +3,6 @@ import {
 	AppRegistry,
 	StyleSheet,
 	View,
-	Modal,
-	Text,
-	Button,
-	ActivityIndicator,
-	Image
 } from 'react-native';
 
 import { createBoundsFromSizeAndPoint, angle360, getDistance } from './src/geo';
@@ -41,7 +36,7 @@ const styles = StyleSheet.create({
 	markerStrip: {
 		position: 'absolute',
 		zIndex: 10,
-		top: '50%',
+		top: '60%',
 		width: '100%',
 		height: 0,
 		backgroundColor: 'green'
@@ -97,7 +92,8 @@ export default class wam extends Component {
 					angle: angle360(location.lng, location.lat, place.location.lng, place.location.lat),
 					place: place,
 					distance: getDistance(location, place.location)
-				}));
+				})).filter((place) => place.place.rating > 0.001);
+
 				this.setState({placesData: processedPlaces});
 				// console.log('YEAH', this.state);
 			});
@@ -132,7 +128,7 @@ export default class wam extends Component {
 			});
 
 		DeviceEventEmitter.addListener('headingUpdated', data => {
-			if (this.state.heading !== null && Math.abs(this.state.heading - data.heading) < 0.5) {
+			if (this.state.heading !== null && Math.abs(this.state.heading - data.heading) < 0.1) {
 				return;
 			}
 			this.setState({
@@ -160,7 +156,6 @@ export default class wam extends Component {
 	}
 
 	render() {
-
 		const swipeConfig = {
 			velocityThreshold: 0.3,
 			directionalOffsetThreshold: 80
