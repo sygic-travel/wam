@@ -5,7 +5,8 @@ import {
 	Text,
 	Button,
 	ActivityIndicator,
-	Image
+	Image,
+	Linking
 } from 'react-native';
 
 export default class PlaceDetailedModal extends Component {
@@ -47,6 +48,14 @@ export default class PlaceDetailedModal extends Component {
 									</View>
 								</View>
 							}
+							<Button
+								onPress={() => {
+									Linking.openURL('https://travel.sygic.com/go/' + this.props.placeDetailed.id);
+								}}
+								title="GO!"
+								color="#0077FF"
+							/>
+
 							<Button
 								onPress={() => this.props.onClosePress()}
 								title="Close"
