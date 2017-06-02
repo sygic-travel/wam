@@ -4,6 +4,7 @@ import {
 	StyleSheet,
 	View,
 } from 'react-native';
+import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 
 import { createBoundsFromSizeAndPoint, angle360, getDistance } from './src/geo';
 import { processPlaces } from './src/places';
@@ -78,6 +79,28 @@ export default class wam extends Component {
 		}
 	}
 
+	getPlaces(category = null) {
+		const location = this.state.location;
+		const bounds = createBoundsFromSizeAndPoint(1000, 1000, location);
+		//console.log('BOUNDS:', bounds);
+		const filter = {bounds: bounds, level: 'poi', limit: 50, };
+
+		if(category) {
+			filter.categories = [category];
+		}
+
+		stSDK.getPlaces(filter).then((places) => {
+			let processedPlaces = places.map((place) => ({
+				angle: angle360(location.lng, location.lat, place.location.lng, place.location.lat),
+				place: place,
+				distance: getDistance(location, place.location)
+			})).filter((place) => place.place.rating > 0.001);
+
+			this.setState({placesData: processedPlaces});
+			// console.log('YEAH', this.state);
+		});
+	}
+
 	componentDidMount() {
 		navigator.geolocation.getCurrentPosition( (position) => {
 			//console.log('POSITION:', position);
@@ -85,18 +108,8 @@ export default class wam extends Component {
 				lat: position.coords.latitude,
 				lng: position.coords.longitude
 			};
-			const bounds = createBoundsFromSizeAndPoint(1000, 1000, location);
-			//console.log('BOUNDS:', bounds);
-			stSDK.getPlaces({bounds: bounds, level: 'poi', limit: 50}).then((places) => {
-				let processedPlaces = places.map((place) => ({
-					angle: angle360(location.lng, location.lat, place.location.lng, place.location.lat),
-					place: place,
-					distance: getDistance(location, place.location)
-				})).filter((place) => place.place.rating > 0.001);
-
-				this.setState({placesData: processedPlaces});
-				// console.log('YEAH', this.state);
-			});
+			this.setState({location: location});
+			this.getPlaces();
 		});
 
 		this.watchID = navigator.geolocation.watchPosition((position) => {
@@ -188,12 +201,37 @@ export default class wam extends Component {
 					})
 					}
 				</View>
-				{ this.state.modalOpened &&
-					<PlaceDetailedModal placeDetailed={this.state.placeDetailed} onClosePress={() => this.setState({
-						modalOpened: false,
-						placeDetailed: null
-					})}/>
-				}
+
+				<View style={{
+					position: 'absolute',
+					bottom: 50,
+					padding: 20
+				}}>
+					<RadioForm
+						radio_props={[
+							{label: 'All', value: null},
+							{label: 'Restaurants', value: 'eating'},
+							{label: 'Sightseeings', value: 'sightseeing'},
+							{label: 'Shopping', value: 'shopping'},
+							{label: 'Sleeping', value: 'sleeping'}
+						]}
+						initial={0}
+						onPress={(value) => {
+							this.getPlaces(value);
+						}}
+						formHorizontal={true}
+						labelHorizontal={false}
+						buttonColor={'#2196f3'}
+						animation={true}
+					/>
+
+					{ this.state.modalOpened &&
+						<PlaceDetailedModal placeDetailed={this.state.placeDetailed} onClosePress={() => this.setState({
+							modalOpened: false,
+							placeDetailed: null
+						})}/>
+					}
+				</View>
 			</View>
 			</GestureRecognizer>
 		);

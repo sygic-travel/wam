@@ -36,9 +36,9 @@ const classToColorMap = {
 };
 
 const sizes = {
-	'big': 60,
-	'medium': 40,
-	'small': 10
+	'big': 80,
+	'medium': 60,
+	'small': 30
 };
 
 const getMarkerStyles = (offset, markerSize, markerColor) => {
@@ -130,7 +130,7 @@ export class Marker extends Component {
 									width: sizes[this.props.markerSize] - 8,
 									height: sizes[this.props.markerSize] - 8,
 									zIndex: 10,
-									borderRadius: 25,
+									borderRadius: 35,
 									margin: 4
 								}}>
 							</Image>
